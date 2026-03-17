@@ -102,6 +102,10 @@ static void accept_new_clients(void) {
     socklen_t len = sizeof(client_addr);
     int fd = accept(listen_fd, (struct sockaddr *)&client_addr, &len);
     if (fd < 0) return;
+
+    /* Set client socket to non-blocking — more reliable than MSG_DONTWAIT */
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (SysSettings.clientNodes[i].socket_fd < 0 || !SysSettings.clientNodes[i].connected) {
             if (SysSettings.clientNodes[i].socket_fd >= 0) close(SysSettings.clientNodes[i].socket_fd);
@@ -154,8 +158,16 @@ void wifi_manager_send_buffered_data(void) {
     if (len == 0) return;
     uint8_t *buf = wifiGVRET.getBufferedBytes();
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (SysSettings.clientNodes[i].socket_fd >= 0 && SysSettings.clientNodes[i].connected)
-            send(SysSettings.clientNodes[i].socket_fd, buf, len, MSG_DONTWAIT);
+        if (SysSettings.clientNodes[i].socket_fd >= 0 && SysSettings.clientNodes[i].connected) {
+            int ret = send(SysSettings.clientNodes[i].socket_fd, buf, len, 0);
+            if (ret < 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
+                /* Send failed — close broken client */
+                close(SysSettings.clientNodes[i].socket_fd);
+                SysSettings.clientNodes[i].socket_fd = -1;
+                SysSettings.clientNodes[i].connected = false;
+                uart_serial_printf("Client #%d send error, dropped\n", i);
+            }
+        }
     }
     wifiGVRET.clearBufferedBytes();
 }
