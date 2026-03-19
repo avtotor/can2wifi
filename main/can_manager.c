@@ -12,8 +12,7 @@
 extern GVRET_Handler_t serialGVRET;
 extern GVRET_Handler_t wifiGVRET;
 
-static uint8_t  s_frame_count = 0;
-static uint32_t s_busload_timer = 0;
+static uint8_t s_frame_count = 0;
 
 typedef struct {
     uint32_t bitsPerQuarter;
