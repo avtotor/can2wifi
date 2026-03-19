@@ -9,7 +9,7 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/firmware
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_BINARY_DIR}/${CMAKE_PROJECT_NAME}.bin
-        ${CMAKE_SOURCE_DIR}/firmware/${CMAKE_PROJECT_NAME}.bin
+        ${CMAKE_SOURCE_DIR}/firmware/esp32s3_can2wifi.bin
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_BINARY_DIR}/bootloader/bootloader.bin
         ${CMAKE_SOURCE_DIR}/firmware/bootloader.bin
