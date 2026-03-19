@@ -28,8 +28,8 @@
 #define SER_BUFF_FLUSH_INTERVAL  20000
 
 #define CFG_BUILD_NUM  420
-#define CFG_VERSION    "ESP32S3_CAN2WIFI (TWAI)"
-#define PREF_NAME      "ESP32S3_CAN2WIFI"
+#define CFG_VERSION    "esp32s3_can2wifi (TWAI)"
+#define PREF_NAME      "esp32s3_can2wifi"
 
 #define NUM_BUSES  2
 #define BLINK_SLOWNESS  100
