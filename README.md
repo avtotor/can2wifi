@@ -32,7 +32,8 @@ flowchart LR
     subgraph ESP ["ESP32-S3 N16R8"]
         direction TB
         TX["GPIO21 TX"]
-        RX["GPIO20 RX"]
+        RX["GPIO20 RX ◄─ 1kΩ+2kΩ"]
+        TX ~~~ RX
     end
 
     subgraph TJA ["TJA1050"]
@@ -41,18 +42,17 @@ flowchart LR
         RXD["RXD"]
         CANH["CANH"]
         CANL["CANL"]
+        TXD ~~~ RXD ~~~ CANH ~~~ CANL
     end
 
     subgraph CAN ["CAN-шина"]
         direction TB
         P6["OBD пин 6"]
         P14["OBD пин 14"]
+        P6 ~~~ P14
     end
 
-    ESP ~~~ TJA
-    TJA ~~~ CAN
     TX -->|"3.3В прямое"| TXD
-    RXD -->|"1kΩ+2kΩ → 3.3В"| RX
     CANH --> P6
     CANL --> P14
 ```
