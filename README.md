@@ -28,33 +28,27 @@ flowchart LR
 ### 🔌 Подключение ESP32-S3 ↔ TJA1050
 
 ```mermaid
-flowchart LR
-    subgraph ESP ["ESP32-S3 N16R8"]
-        direction TB
-        TX["GPIO21 TX"]
-        RX["GPIO20 RX ◄─ 1kΩ+2kΩ"]
-        TX ~~~ RX
-    end
+block-beta
+  columns 3
+  block:ESP["ESP32-S3 N16R8"]:1
+    TX["GPIO21 TX"]
+    RX["GPIO20 RX"]
+  end
+  block:TJA["TJA1050"]:1
+    TXD["TXD"]
+    RXD["RXD"]
+    CANH["CANH"]
+    CANL["CANL"]
+  end
+  block:CAN["CAN-шина"]:1
+    P6["OBD пин 6"]
+    P14["OBD пин 14"]
+  end
 
-    subgraph TJA ["TJA1050"]
-        direction TB
-        TXD["TXD"]
-        RXD["RXD"]
-        CANH["CANH"]
-        CANL["CANL"]
-        TXD ~~~ RXD ~~~ CANH ~~~ CANL
-    end
-
-    subgraph CAN ["CAN-шина"]
-        direction TB
-        P6["OBD пин 6"]
-        P14["OBD пин 14"]
-        P6 ~~~ P14
-    end
-
-    TX -->|"3.3В прямое"| TXD
-    CANH --> P6
-    CANL --> P14
+  TX -->|"3.3В"| TXD
+  RXD -->|"1kΩ+2kΩ"| RX
+  CANH --> P6
+  CANL --> P14
 ```
 
 > ⚠️ **RX — обязательно через делитель!** TJA1050 выдаёт 5В, ESP32 выдерживает 3.3В.
